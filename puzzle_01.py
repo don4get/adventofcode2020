@@ -50,22 +50,49 @@ def toc(fmt="Elapsed: %s seconds."):
     return elapsed_time
 
 
-def main():
+def main(two_arguments = True):
     data = pd.read_csv("puzzle_01_input.csv", header=None).T
     values = data.values[0]
     found = False
     tic()
-    result = [(v1, v2, v1 * v2) for v1 in values for v2 in values if v1 + v2 == 2020]
-    v1, v2, product = result[0]
-    print(f"Result with list comprehension: {v1} * {v2} = {product}")
+    if two_arguments:
+        result = [(v1, v2, v1 * v2)
+                  for v1 in values
+                  for v2 in values
+                  if v1 + v2 == 2020]
+        v1, v2, product = result[0]
+        print(f"Result with list comprehension: "
+              f"{v1} * {v2} = {product}")
+    else:
+        result = [(v1, v2, v3, v1 * v2 * v3)
+                  for v1 in values
+                  for v2 in values
+                  for v3 in values
+                  if v1 + v2 + v3 == 2020]
+        v1, v2, v3, product = result[0]
+        print(f"Result with list comprehension: "
+              f"{v1} * {v2} * {v3} = {product}")
+
     toc()
     tic()
     for v1 in values:
         for v2 in values:
-            sum = v1 + v2
-            if sum == 2020:
-                print(f"Result with 2 for loops: {v1} * {v2} = {v1 * v2}")
-                found = True
+            if two_arguments:
+                sum = v1 + v2
+                if sum == 2020:
+                    print(f"Result with 2 for loops: "
+                          f"{v1} * {v2} = {v1 * v2}")
+                    found = True
+                    break
+            else:
+                for v3 in values:
+                    sum = v1 + v2 + v3
+                    if sum == 2020:
+                        print(f"Result with 3 for loops: "
+                              f"{v1} * {v2} * {v3} = {v1 * v2 * v3}")
+                        found = True
+                        break
+            if found:
                 break
         if found:
             break
@@ -73,4 +100,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(two_arguments=False)
